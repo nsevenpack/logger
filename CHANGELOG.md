@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/nsevenpack/logger/compare/v1.0.0...v1.1.0) (2025-04-16)
+
+
+### Features
+
+* add install doc ([eb75c29](https://github.com/nsevenpack/logger/commit/eb75c2967f003a4a48f2a3ef5a90088ff3f5f1d7))
+
 # 1.0.0 (2025-04-16)
 
 
