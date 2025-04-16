@@ -1,0 +1,11 @@
+services:
+  logger-pack-go:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: logger-pack-go
+    image: logger-pack-go
+    volumes:
+      - ../:/app
+    stdin_open: true
+    tty: true
