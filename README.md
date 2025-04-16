@@ -22,7 +22,13 @@ func main() {
 ## Dev publication  
 
 ```bash
-git commit -m "feat: add new feature" # ==> 0.1.0
-git commit -m "fix: fix bug" # ==> 0.0.1
-git commit -m "feat!: update dependencies" # ==> 1.0.0
+git commit -m "fix: improve error output"
+# => 1.0.1
+
+git commit -m "feat: support custom log level"
+# => 1.1.0
+
+git commit -m "feat!: change default log level behavior"
+# => 2.0.0
+```
 
