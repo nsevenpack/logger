@@ -11,16 +11,20 @@ Petit package de log Go simple.
 ## Installation
 
 ```bash
-# installe la derniere version 1 maximum
+# installe la derniere version 1.x.x
 go get github.com/nsevenpack/logger@latest
-# installe la derniere version 2 maximum
-go get github.com/nsevenpack/logger/v2
+# installe la derniere version 2.x.x
+go get github.com/nsevenpack/logger/v2@latest
 
-# liste les versions disponibles
+# liste les versions disponibles pour 1.x.x
 go list -m -versions github.com/nsevenpack/logger
+# liste les versions disponibles pour 2.x.x
+go list -m -versions github.com/nsevenpack/logger/v2
 
 # installe une version précise
-go get github.com/nsevenpack/logger@v1.0.0
+go get github.com/nsevenpack/logger@v1.1.0
+# ou par version majeure
+go get github.com/nsevenpack/logger/v2@v2.0.1
 ```
 
 ## Fonctionnalités
