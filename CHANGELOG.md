@@ -1,3 +1,10 @@
+## [2.0.1](https://github.com/nsevenpack/logger/compare/v2.0.0...v2.0.1) (2025-04-17)
+
+
+### Bug Fixes
+
+* add doc ([6ce10d4](https://github.com/nsevenpack/logger/commit/6ce10d4611e50cd85741e0942089fa7e1733122e))
+
 # [2.0.0](https://github.com/nsevenpack/logger/compare/v1.1.0...v2.0.0) (2025-04-17)
 
 # [1.1.0](https://github.com/nsevenpack/logger/compare/v1.0.0...v1.1.0) (2025-04-16)
