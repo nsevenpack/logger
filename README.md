@@ -11,8 +11,10 @@ Petit package de log Go simple.
 ## Installation
 
 ```bash
-# installe la derniere version
+# installe la derniere version 1 maximum
 go get github.com/nsevenpack/logger@latest
+# installe la derniere version 2 maximum
+go get github.com/nsevenpack/logger/v2
 
 # liste les versions disponibles
 go list -m -versions github.com/nsevenpack/logger
