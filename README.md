@@ -35,6 +35,31 @@ package main
 import "github.com/nsevenpack/logger"
 
 func main() {
-	logger.Info("Hello!")
+	// initialisé le logger, la creation du fichier de log et du dossier
+	logger.Init()
+	// defer pour close à la fin du programme
+	defer logger.Close()
+
+	// log success
+	logger.S("Hello!")
+	// log error
+	logger.E("Hello!")
+	// log warning
+	logger.W("Hello!")
+	// log info
+	logger.I("Hello!")
+	// log fatal (attention celui ci arrete le programme)
+	logger.F("Hello!")
+
+	// log success avec une variable
+	logger.Sf("Hello %s", "world")
+	// log error avec une variable
+	logger.Ef("Hello %s", "world")
+	// log warning avec une variable
+	logger.Wf("Hello %s", "world")
+	// log info avec une variable
+	logger.If("Hello %s", "world")
+	// log fatal avec une variable (attention celui ci arrete le programme)
+	logger.Ff("Hello %s", "world")
 }
 ```
