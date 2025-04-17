@@ -20,6 +20,13 @@ go list -m -versions github.com/nsevenpack/logger
 # installe une version précise
 go get github.com/nsevenpack/logger@v1.0.0
 ```
+
+## Fonctionnalités
+- Le logger creer un dossier tmp/log/dev par defaut si vous avez une variable d'environnement APP_ENV=prod ou APP_ENV=test etc ...  
+alors le dossier dev sera remplacé par le nom de l'environnement.  
+- Le logger creer un fichier de log par jour.  
+- Jounalisation dans le fichier créé et dans le terminal.  
+
 ## Utilisation
 
 ```golang
