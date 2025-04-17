@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"regexp"
 	"runtime"
 	"time"
 )
@@ -18,6 +19,14 @@ const (
     YELLOW = "\033[33m"
     CYAN   = "\033[36m"
     RESET  = "\033[0m"
+)
+
+const (
+	SUCCESS = "🟢"
+	INFO    = "🔵"
+	WARN    = "🟡"
+	ERROR   = "🔴"
+	FATAL   = "💀"
 )
 
 // ==================== fonction logger ==================== //
@@ -33,57 +42,102 @@ func callerInfo(skip int) string {
 	return fmt.Sprintf("%s:%s:%d", fileName, funcName, line)
 }
 
-func logWithLocation(level string, emoji string, msg string) {
+func defineTypeLogger(level string) (string, string) {
+	switch level {
+	case "SUCCESS":
+		return SUCCESS, GREEN
+	case "INFO":
+		return INFO, CYAN
+	case "WARN":
+		return WARN, YELLOW
+	case "ERROR":
+		return ERROR, RED
+	case "FATAL":
+		return FATAL, RED
+	default:
+		return "", ""
+	}
+}
+
+func logWithLocation(level string, msg string) {
 	location := callerInfo(3)
-	stringFormat := fmt.Sprintf("%s [%s] [%s] %s", emoji, level, location, msg)
+	emoji, color := defineTypeLogger(level)
+	stringFormat := fmt.Sprintf("%s%s [%s] [%s]: %v%s", color, emoji, level, location, RESET, msg)
 	log.Println(stringFormat)
 }
 
-func logfWithLocation(level string, emoji string, format string, args ...any) {
+func logfWithLocation(level string, format string, args ...any) {
 	location := callerInfo(3)
-	log.Printf("%s [%s] [%s] %s", emoji, level, location, fmt.Sprintf(format, args...))
+	emoji, color := defineTypeLogger(level)
+	log.Printf("%s%s [%s] [%s]: %v%s", color, emoji, level, location, RESET, fmt.Sprintf(format, args...))
 }
 
-func Success(msg string) {
-	logWithLocation("SUCCESS", "✅", msg)
+func S(msg string) {
+	logWithLocation("SUCCESS", msg)
 }
 
-func Info(msg string) {
-	logWithLocation("INFO", "ℹ️ ", msg)
+func I(msg string) {
+	logWithLocation("INFO", msg)
 }
 
-func Warn(msg string) {
-	logWithLocation("WARN", "⚠️ ", msg)
+func W(msg string) {
+	logWithLocation("WARN", msg)
 }
 
-func Error(msg string) {
-	logWithLocation("ERROR", "❌", msg)
+func E(msg string) {
+	logWithLocation("ERROR", msg)
 }
 
-func Fatal(msg string) {
+func F(msg string) {
 	location := callerInfo(3)
-	log.Fatalf("💀 [FATAL] [%s] %s", location, msg)
+	emoji, color := defineTypeLogger("FATAL")
+	log.Fatalf("%s%s [FATAL] [%s] %s %v", color, emoji, location, msg, RESET)
 }
 
-func Successf(format string, args ...any) {
-	logfWithLocation("SUCCESS", "✅", format, args...)
+func Sf(format string, args ...any) {
+	logfWithLocation("SUCCESS", format, args...)
 }
 
-func Infof(format string, args ...any) {
-	logfWithLocation("INFO", "ℹ️ ", format, args...)
+func If(format string, args ...any) {
+	logfWithLocation("INFO", format, args...)
 }
 
-func Warnf(format string, args ...any) {
-	logfWithLocation("WARN", "⚠️ ", format, args...)
+func Wf(format string, args ...any) {
+	logfWithLocation("WARN", format, args...)
 }
 
-func Errorf(format string, args ...any) {
-	logfWithLocation("ERROR", "❌", format, args...)
+func Ef(format string, args ...any) {
+	logfWithLocation("ERROR", format, args...)
 }
 
-func Fatalf(format string, args ...any) {
+func Ff(format string, args ...any) {
 	location := callerInfo(3)
-	log.Fatalf("💀 [FATAL] [%s] %s", location, fmt.Sprintf(format, args...))
+	emoji, color := defineTypeLogger("FATAL")
+	log.Fatalf("%s%s [FATAL] [%s] %s %v", color, emoji, location, fmt.Sprintf(format, args...), RESET)
+}
+
+// ==================== couleur & writer ==================== //
+
+type dualLogger struct {
+	stdout    io.Writer
+	file      io.Writer
+	withColor bool
+}
+
+func (d *dualLogger) Write(p []byte) (n int, err error) {
+	if d.withColor {
+		_, _ = d.stdout.Write(p)
+	} else {
+		_, _ = d.stdout.Write(stripColor(p))
+	}
+
+	return d.file.Write(stripColor(p))
+}
+
+var ansiRegexp = regexp.MustCompile(`\x1b\[[0-9;]*m`)
+
+func stripColor(input []byte) []byte {
+	return ansiRegexp.ReplaceAll(input, []byte(""))
 }
 
 // ==================== init ==================== //
@@ -92,25 +146,33 @@ func InitFromEnv(env string) {
 	logDir := filepath.Join("tmp", "log", env)
 	logPath := filepath.Join(logDir, "log-"+time.Now().Format("2006-01-02")+".log")
 
+	emojiS, colorS := defineTypeLogger("SUCCESS")
+	emojiI, colorI := defineTypeLogger("INFO")
+	emojiF, colorF := defineTypeLogger("FATAL")
+
 	err := os.MkdirAll(logDir, os.ModePerm)
 	if err != nil {
-		log.Fatalf("❌ [FATAL] Impossible de créer le dossier de log : %v", err)
+		log.Fatalf("%s%s [FATAL] Impossible de créer le chemin de log requis : %v %v", colorF, emojiF, err, RESET)
 	}
 
-	log.Printf("ℹ️  [INFO] Creation du fichier de log : %s", logPath)
+	log.Printf("%s%s [INFO] Création du fichier de log à l’emplacement : %s %v", colorI, emojiI, logPath, RESET)
 
 	LogFile, err = os.OpenFile(logPath, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 	if err != nil {
-		log.Fatalf("❌ [FATAL] Impossible d’ouvrir le fichier de log : %v", err)
+		log.Fatalf("%s%s [FATAL] Impossible d’accéder au fichier de log : %v %v", colorF, emojiF, err, RESET)
 	}
 
-	log.Printf("ℹ️  [INFO] Fichier de log ouvert")
+	log.Printf("%s%s [INFO] Fichier de log ouvert à l’emplacement : %s %v", colorI, emojiI, logPath, RESET)
 
-	multi := io.MultiWriter(os.Stdout, LogFile)
-	log.SetOutput(multi)
+	dualWriter := &dualLogger{
+		stdout:    os.Stdout,
+		file:      LogFile,
+		withColor: true,
+	}
+	log.SetOutput(dualWriter)
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 
-	log.Printf("✅ [SUCCESS] Logger initialisé avec succès")
+	log.Printf("%s%s [SUCCESS] Logger initialisé avec succès. Fichier : %s %v",colorS, emojiS, logPath, RESET)
 }
 
 func Init() {
