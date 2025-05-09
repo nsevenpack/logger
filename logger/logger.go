@@ -14,11 +14,11 @@ import (
 var LogFile *os.File
 
 const (
-    RED    = "\033[31m"
-    GREEN  = "\033[32m"
-    YELLOW = "\033[33m"
-    CYAN   = "\033[36m"
-    RESET  = "\033[0m"
+	RED    = "\033[31m"
+	GREEN  = "\033[32m"
+	YELLOW = "\033[33m"
+	CYAN   = "\033[36m"
+	RESET  = "\033[0m"
 )
 
 const (
@@ -142,9 +142,29 @@ func stripColor(input []byte) []byte {
 
 // ==================== init ==================== //
 
+func findProjectRoot() string {
+	dir, _ := os.Getwd()
+	for {
+		if _, err := os.Stat(filepath.Join(dir, "go.mod")); err == nil {
+			return dir
+		}
+		parent := filepath.Dir(dir)
+		if parent == dir {
+			break
+		}
+		dir = parent
+	}
+	log.Fatal("Impossible de trouver la racine du projet")
+	return ""
+}
+
 func InitFromEnv(env string) {
-	logDir := filepath.Join("tmp", "log", env)
+	projectRoot := findProjectRoot()
+	log.Printf("%s [INFO] Projet racine trouvé : %s %v", CYAN, projectRoot, RESET)
+	logDir := filepath.Join(projectRoot, "tmp", "log", env)
+	log.Printf("%s [INFO] Log Dir : %s", CYAN, logDir)
 	logPath := filepath.Join(logDir, "log-"+time.Now().Format("2006-01-02")+".log")
+	log.Printf("%s [INFO] Log Path : %s", CYAN, logPath)
 
 	emojiS, colorS := defineTypeLogger("SUCCESS")
 	emojiI, colorI := defineTypeLogger("INFO")
@@ -172,16 +192,16 @@ func InitFromEnv(env string) {
 	log.SetOutput(dualWriter)
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 
-	log.Printf("%s%s [SUCCESS] Logger initialisé avec succès. Fichier : %s %v",colorS, emojiS, logPath, RESET)
+	log.Printf("%s%s [SUCCESS] Logger initialisé avec succès. Fichier : %s %v", colorS, emojiS, logPath, RESET)
 }
 
 func Init() {
 	env := os.Getenv("APP_ENV")
-	
-	if env == "" { 
+
+	if env == "" {
 		env = "dev"
 	}
-	
+
 	InitFromEnv(env)
 }
 
