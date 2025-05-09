@@ -161,8 +161,10 @@ func findProjectRoot() string {
 func InitFromEnv(env string) {
 	projectRoot := findProjectRoot()
 	log.Printf("%s [INFO] Projet racine trouvé : %s %v", CYAN, projectRoot, RESET)
+
 	logDir := filepath.Join(projectRoot, "tmp", "log", env)
 	log.Printf("%s [INFO] Log Dir : %s", CYAN, logDir)
+
 	logPath := filepath.Join(logDir, "log-"+time.Now().Format("2006-01-02")+".log")
 	log.Printf("%s [INFO] Log Path : %s", CYAN, logPath)
 
