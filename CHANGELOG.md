@@ -1,3 +1,10 @@
+## [2.0.2](https://github.com/nsevenpack/logger/compare/v2.0.1...v2.0.2) (2025-05-09)
+
+
+### Bug Fixes
+
+* qa ([600c0ae](https://github.com/nsevenpack/logger/commit/600c0ae7d1da47edcf72f11735ae36be9659385d))
+
 ## [2.0.1](https://github.com/nsevenpack/logger/compare/v2.0.0...v2.0.1) (2025-04-17)
 
 
