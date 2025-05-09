@@ -1,3 +1,10 @@
+## [2.0.3](https://github.com/nsevenpack/logger/compare/v2.0.2...v2.0.3) (2025-05-09)
+
+
+### Bug Fixes
+
+* add argument env for define environement ([9e21358](https://github.com/nsevenpack/logger/commit/9e21358f8f00c21acc169d68168a99edfe3cfabf))
+
 ## [2.0.2](https://github.com/nsevenpack/logger/compare/v2.0.1...v2.0.2) (2025-05-09)
 
 
