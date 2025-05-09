@@ -197,9 +197,7 @@ func InitFromEnv(env string) {
 	log.Printf("%s%s [SUCCESS] Logger initialisé avec succès. Fichier : %s %v", colorS, emojiS, logPath, RESET)
 }
 
-func Init() {
-	env := os.Getenv("APP_ENV")
-
+func Init(env string) {
 	if env == "" {
 		env = "dev"
 	}
