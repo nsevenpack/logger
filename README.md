@@ -42,7 +42,8 @@ import "github.com/nsevenpack/logger"
 
 func main() {
 	// initialisé le logger, la creation du fichier de log et du dossier
-	logger.Init()
+	env := "dev" // ou "prod" ou "test" ou autre
+	logger.Init(env)
 	// defer pour close à la fin du programme
 	defer logger.Close()
 
