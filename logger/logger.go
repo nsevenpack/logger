@@ -186,11 +186,23 @@ func InitFromEnv(env string) {
 
 	log.Printf("%s%s [INFO] Fichier de log ouvert à l’emplacement : %s %v", colorI, emojiI, logPath, RESET)
 
-	dualWriter := &dualLogger{
-		stdout:    os.Stdout,
-		file:      LogFile,
-		withColor: true,
+	var dualWriter io.Writer
+	if env == "test" {
+		// ecriture uniquement fichier
+		dualWriter = &dualLogger{
+			stdout:    io.Discard,
+			file:      LogFile,
+			withColor: false,
+		}
+	} else {
+		// ecriture console + fichier
+		dualWriter = &dualLogger{
+			stdout:    os.Stdout,
+			file:      LogFile,
+			withColor: true,
+		}
 	}
+
 	log.SetOutput(dualWriter)
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 
