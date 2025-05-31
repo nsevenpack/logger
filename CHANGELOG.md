@@ -1,3 +1,10 @@
+# [2.1.0](https://github.com/nsevenpack/logger/compare/v2.0.3...v2.1.0) (2025-05-31)
+
+
+### Features
+
+* constraint log on test env ([867566b](https://github.com/nsevenpack/logger/commit/867566b3c88c8520146b4bdc0a87f650230d9a9c))
+
 ## [2.0.3](https://github.com/nsevenpack/logger/compare/v2.0.2...v2.0.3) (2025-05-09)
 
 
