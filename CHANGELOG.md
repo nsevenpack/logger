@@ -1,3 +1,10 @@
+# [2.2.0](https://github.com/nsevenpack/logger/compare/v2.1.0...v2.2.0) (2025-06-15)
+
+
+### Features
+
+* change access variable ([13459e3](https://github.com/nsevenpack/logger/commit/13459e3f80dd2f1d3c82c185590e802f1341f23d))
+
 # [2.1.0](https://github.com/nsevenpack/logger/compare/v2.0.3...v2.1.0) (2025-05-31)
 
 
