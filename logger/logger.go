@@ -11,14 +11,14 @@ import (
 	"time"
 )
 
-var LogFile *os.File
+var logFile *os.File
 
 const (
-	RED    = "\033[31m"
-	GREEN  = "\033[32m"
-	YELLOW = "\033[33m"
-	CYAN   = "\033[36m"
-	RESET  = "\033[0m"
+	red    = "\033[31m"
+	green  = "\033[32m"
+	yellow = "\033[33m"
+	cyan   = "\033[36m"
+	reset  = "\033[0m"
 )
 
 const (
@@ -45,15 +45,15 @@ func callerInfo(skip int) string {
 func defineTypeLogger(level string) (string, string) {
 	switch level {
 	case "SUCCESS":
-		return SUCCESS, GREEN
+		return SUCCESS, green
 	case "INFO":
-		return INFO, CYAN
+		return INFO, cyan
 	case "WARN":
-		return WARN, YELLOW
+		return WARN, yellow
 	case "ERROR":
-		return ERROR, RED
+		return ERROR, red
 	case "FATAL":
-		return FATAL, RED
+		return FATAL, red
 	default:
 		return "", ""
 	}
@@ -62,14 +62,14 @@ func defineTypeLogger(level string) (string, string) {
 func logWithLocation(level string, msg string) {
 	location := callerInfo(3)
 	emoji, color := defineTypeLogger(level)
-	stringFormat := fmt.Sprintf("%s%s [%s] [%s]: %v%s", color, emoji, level, location, RESET, msg)
+	stringFormat := fmt.Sprintf("%s%s [%s] [%s]: %v%s", color, emoji, level, location, reset, msg)
 	log.Println(stringFormat)
 }
 
 func logfWithLocation(level string, format string, args ...any) {
 	location := callerInfo(3)
 	emoji, color := defineTypeLogger(level)
-	log.Printf("%s%s [%s] [%s]: %v%s", color, emoji, level, location, RESET, fmt.Sprintf(format, args...))
+	log.Printf("%s%s [%s] [%s]: %v%s", color, emoji, level, location, reset, fmt.Sprintf(format, args...))
 }
 
 func S(msg string) {
@@ -91,7 +91,7 @@ func E(msg string) {
 func F(msg string) {
 	location := callerInfo(3)
 	emoji, color := defineTypeLogger("FATAL")
-	log.Fatalf("%s%s [FATAL] [%s] %s %v", color, emoji, location, msg, RESET)
+	log.Fatalf("%s%s [FATAL] [%s] %s %v", color, emoji, location, msg, reset)
 }
 
 func Sf(format string, args ...any) {
@@ -113,7 +113,7 @@ func Ef(format string, args ...any) {
 func Ff(format string, args ...any) {
 	location := callerInfo(3)
 	emoji, color := defineTypeLogger("FATAL")
-	log.Fatalf("%s%s [FATAL] [%s] %s %v", color, emoji, location, fmt.Sprintf(format, args...), RESET)
+	log.Fatalf("%s%s [FATAL] [%s] %s %v", color, emoji, location, fmt.Sprintf(format, args...), reset)
 }
 
 // ==================== couleur & writer ==================== //
@@ -154,19 +154,19 @@ func findProjectRoot() string {
 		}
 		dir = parent
 	}
-	log.Fatal("Impossible de trouver la racine du projet")
+	log.Fatal("[FATAL] Impossible de trouver la racine du projet")
 	return ""
 }
 
-func InitFromEnv(env string) {
+func initFromEnv(env string) {
 	projectRoot := findProjectRoot()
-	log.Printf("%s [INFO] Projet racine trouvé : %s %v", CYAN, projectRoot, RESET)
+	log.Printf("%s [INFO] Projet racine trouvé : %s %v", cyan, projectRoot, reset)
 
 	logDir := filepath.Join(projectRoot, "tmp", "log", env)
-	log.Printf("%s [INFO] Log Dir : %s", CYAN, logDir)
+	log.Printf("%s [INFO] Log Dir : %s", cyan, logDir)
 
 	logPath := filepath.Join(logDir, "log-"+time.Now().Format("2006-01-02")+".log")
-	log.Printf("%s [INFO] Log Path : %s", CYAN, logPath)
+	log.Printf("%s [INFO] Log Path : %s", cyan, logPath)
 
 	emojiS, colorS := defineTypeLogger("SUCCESS")
 	emojiI, colorI := defineTypeLogger("INFO")
@@ -174,31 +174,31 @@ func InitFromEnv(env string) {
 
 	err := os.MkdirAll(logDir, os.ModePerm)
 	if err != nil {
-		log.Fatalf("%s%s [FATAL] Impossible de créer le chemin de log requis : %v %v", colorF, emojiF, err, RESET)
+		log.Fatalf("%s%s [FATAL] Impossible de créer le chemin de log requis : %v %v", colorF, emojiF, err, reset)
 	}
 
-	log.Printf("%s%s [INFO] Création du fichier de log à l’emplacement : %s %v", colorI, emojiI, logPath, RESET)
+	log.Printf("%s%s [INFO] Création du fichier de log à l’emplacement : %s %v", colorI, emojiI, logPath, reset)
 
-	LogFile, err = os.OpenFile(logPath, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+	logFile, err = os.OpenFile(logPath, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 	if err != nil {
-		log.Fatalf("%s%s [FATAL] Impossible d’accéder au fichier de log : %v %v", colorF, emojiF, err, RESET)
+		log.Fatalf("%s%s [FATAL] Impossible d’accéder au fichier de log : %v %v", colorF, emojiF, err, reset)
 	}
 
-	log.Printf("%s%s [INFO] Fichier de log ouvert à l’emplacement : %s %v", colorI, emojiI, logPath, RESET)
+	log.Printf("%s%s [INFO] Fichier de log ouvert à l’emplacement : %s %v", colorI, emojiI, logPath, reset)
 
 	var dualWriter io.Writer
 	if env == "test" {
 		// ecriture uniquement fichier
 		dualWriter = &dualLogger{
 			stdout:    io.Discard,
-			file:      LogFile,
+			file:      logFile,
 			withColor: false,
 		}
 	} else {
 		// ecriture console + fichier
 		dualWriter = &dualLogger{
 			stdout:    os.Stdout,
-			file:      LogFile,
+			file:      logFile,
 			withColor: true,
 		}
 	}
@@ -206,7 +206,7 @@ func InitFromEnv(env string) {
 	log.SetOutput(dualWriter)
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 
-	log.Printf("%s%s [SUCCESS] Logger initialisé avec succès. Fichier : %s %v", colorS, emojiS, logPath, RESET)
+	log.Printf("%s%s [SUCCESS] Logger initialisé avec succès. Fichier : %s %v", colorS, emojiS, logPath, reset)
 }
 
 func Init(env string) {
@@ -214,11 +214,11 @@ func Init(env string) {
 		env = "dev"
 	}
 
-	InitFromEnv(env)
+	initFromEnv(env)
 }
 
 func Close() {
-	if LogFile != nil {
-		LogFile.Close()
+	if logFile != nil {
+		logFile.Close()
 	}
 }
